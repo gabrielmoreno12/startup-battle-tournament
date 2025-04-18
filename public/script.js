@@ -1,5 +1,17 @@
 'use strict';
 
+/////////////////////////////////////////
+// Market Events Deck
+/////////////////////////////////////////
+const marketEvents = [
+  { name: "Viral Trend", description: "Sua startup explodiu nas redes sociais!", delta: +5, icon: "📈" },
+  { name: "Hackers Invadiram", description: "Um ataque cibernético tirou seu site do ar.", delta: -4, icon: "💻" },
+  { name: "Investidor Anjo", description: "Um investidor generoso entrou com capital extra!", delta: +8, icon: "😇" },
+  { name: "Crise Regulatória", description: "Uma nova lei complicou seu modelo de negócio.", delta: -6, icon: "⚖️" },
+  { name: "Matéria em Revista", description: "Você foi destaque em uma grande publicação!", delta: +3, icon: "📰" },
+  { name: "Avanço Tecnológico", description: "Seu time lançou um recurso revolucionário.", delta: +4, icon: "🤖" }
+];
+
 let round = 1;
 let participants = [];
 let winners = [];
@@ -7,40 +19,33 @@ let allStartups = [];
 let tournamentChampion = null;
 
 // —————————————————————————————
-// DOMContentLoaded: só monta a lista lateral e cadastra o botão Start
+// DOMContentLoaded: monta lista lateral e cadastra Start
 // —————————————————————————————
 window.addEventListener('DOMContentLoaded', async () => {
-  await carregarEmpresas();  // só a listagem lateral
+  await carregarEmpresas();
 
-  const startBtn = document.querySelector('.start');
-  if (startBtn) {
-    startBtn.addEventListener('click', async () => {
-      // 1) busca fresh do servidor
-      const fresh = await fetchEmpresas();
-      // 2) inicializa allStartups + stats
-      allStartups = fresh.map(e => ({
-        ...e,
-        pts_totais: e.pts_totais || 0,
-        stats: {
-          convincing_pitch: 0,
-          bugs: 0,
-          good_user_traction: 0,
-          angry_investor: 0,
-          fake_news: 0,
-          sharkFights: 0
-        }
-      }));
-      // 3) define participantes para o round
-      participants = [...allStartups];
-      winners = [];
-      round = 1;
-
-      // 4) limpa a tela e renderiza a primeira rodada
-      await renderBattles(true);
-    });
-  }
+  document.querySelector('.start')?.addEventListener('click', async () => {
+    const fresh = await fetchEmpresas();
+    allStartups = fresh.map(e => ({
+      ...e,
+      pts_totais: e.pts_totais || 0,
+      stats: {
+        convincing_pitch: 0,
+        bugs: 0,
+        good_user_traction: 0,
+        angry_investor: 0,
+        fake_news: 0,
+        sharkFights: 0,
+        marketBonus: 0,
+        marketOnus: 0
+      }
+    }));
+    participants = [...allStartups];
+    winners = [];
+    round = 1;
+    await renderBattles(true);
+  });
 });
-
 
 // —————————————————————————————
 // Helpers de API
@@ -50,7 +55,6 @@ async function fetchEmpresas() {
   if (!res.ok) throw new Error(res.statusText);
   return res.json();
 }
-
 async function patchPoints(id, delta) {
   await fetch(`/empresas/${id}/points`, {
     method: 'PATCH',
@@ -60,7 +64,7 @@ async function patchPoints(id, delta) {
 }
 
 // —————————————————————————————
-// Inserir / Deletar / Listar empresas (lista lateral)
+// Inserir / Deletar / Listar empresas (lateral)
 // —————————————————————————————
 async function carregarEmpresas() {
   const container = document.querySelector('.companies__row');
@@ -77,7 +81,6 @@ async function carregarEmpresas() {
     </div>
   `).join('');
 
-  // habilita/desabilita botões conforme regras
   const count = empresas.length;
   document.querySelector('.form--insert__company .form__btn')
     .disabled = count >= 8;
@@ -88,57 +91,59 @@ async function carregarEmpresas() {
 // —————————————————————————————
 // INSERT
 // —————————————————————————————
-document.querySelector('.form--insert__company').addEventListener('submit', async ev => {
-  ev.preventDefault();
-  const nextID = await generate_ID();
-  const company = {
-    EMPRESA_ID: nextID,
-    NOME: document.querySelector('.form__input--nome').value.trim(),
-    SLOGAN: document.querySelector('.form__input--slogan').value.trim(),
-    ANO_FUND: document.querySelector('.form__input--ano').value.trim()
-  };
-  try {
-    const res = await fetch('/empresas', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(company)
-    });
-    const msg = document.getElementById('message--insert');
-    const obj = await res.json();
-    if (res.ok) {
-      msg.textContent = obj.message; msg.classList.remove('error');
-      await carregarEmpresas();
-    } else {
-      msg.textContent = obj.error; msg.classList.add('error');
+document.querySelector('.form--insert__company')
+  .addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const nextID = await generate_ID();
+    const company = {
+      EMPRESA_ID: nextID,
+      NOME: document.querySelector('.form__input--nome').value.trim(),
+      SLOGAN: document.querySelector('.form__input--slogan').value.trim(),
+      ANO_FUND: document.querySelector('.form__input--ano').value.trim()
+    };
+    try {
+      const res = await fetch('/empresas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(company)
+      });
+      const msg = document.getElementById('message--insert');
+      const obj = await res.json();
+      if (res.ok) {
+        msg.textContent = obj.message; msg.classList.remove('error');
+        await carregarEmpresas();
+      } else {
+        msg.textContent = obj.error; msg.classList.add('error');
+      }
+    } catch (err) {
+      const msg = document.getElementById('message--insert');
+      msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
     }
-  } catch (err) {
-    const msg = document.getElementById('message--insert');
-    msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
-  }
-});
+  });
 
 // —————————————————————————————
 // DELETE
 // —————————————————————————————
-document.querySelector('.form--delete__company').addEventListener('submit', async ev => {
-  ev.preventDefault();
-  const id = document.querySelector('.form__input--id').value.trim();
-  if (!id) return alert('Informe um ID válido');
-  try {
-    const res = await fetch(`/empresas/${id}`, { method: 'DELETE' });
-    const msg = document.getElementById('message--delete');
-    const obj = await res.json();
-    if (res.ok) {
-      msg.textContent = obj.message; msg.classList.remove('error');
-      await carregarEmpresas();
-    } else {
-      msg.textContent = obj.error; msg.classList.add('error');
+document.querySelector('.form--delete__company')
+  .addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const id = document.querySelector('.form__input--id').value.trim();
+    if (!id) return alert('Informe um ID válido');
+    try {
+      const res = await fetch(`/empresas/${id}`, { method: 'DELETE' });
+      const msg = document.getElementById('message--delete');
+      const obj = await res.json();
+      if (res.ok) {
+        msg.textContent = obj.message; msg.classList.remove('error');
+        await carregarEmpresas();
+      } else {
+        msg.textContent = obj.error; msg.classList.add('error');
+      }
+    } catch (err) {
+      const msg = document.getElementById('message--delete');
+      msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
     }
-  } catch (err) {
-    const msg = document.getElementById('message--delete');
-    msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
-  }
-});
+  });
 
 async function generate_ID() {
   const empresas = await fetchEmpresas();
@@ -171,15 +176,11 @@ function getStageName(count) {
 /////////////////////////////////////////
 /* RENDERIZA BATALHAS EM DUPLAS E ROUNDS */
 /////////////////////////////////////////
-
 async function renderBattles(clearPage = false) {
-  // 1) Se clearPage, monta header + container + botão
   if (clearPage) {
     const stage = getStageName(participants.length);
     document.querySelector('.body').innerHTML = `
-      <h2 class="round-header">
-        Rodada ${round}${stage ? ' – ' + stage : ''}
-      </h2>
+      <h2 class="round-header">Rodada ${round}${stage ? ' – ' + stage : ''}</h2>
       <div class="battles__container"></div>
       <button class="next-round" disabled>Avançar para próxima rodada</button>
     `;
@@ -196,13 +197,11 @@ async function renderBattles(clearPage = false) {
   const battleArea = document.querySelector('.battles__container');
   battleArea.innerHTML = '';
 
-  // Se for final (apenas 2 participantes)
   if (participants.length === 2) {
     criarDupla(participants[0], participants[1], battleArea);
     return;
   }
 
-  // Senão: embaralha e monta pares
   const shuffled = shuffle(participants.slice());
   for (let i = 0; i < shuffled.length; i += 2) {
     const a = shuffled[i], b = shuffled[i + 1];
@@ -233,16 +232,26 @@ function criarDupla(a, b, container) {
 
 function bindBattleModal(divBattle, a, b) {
   divBattle.addEventListener('click', () => {
-    // Cria overlay e modal...
+    // 1) sorteia um Market Event e quem será afetado
+    const evtIndex = Math.floor(Math.random() * marketEvents.length);
+    const evt      = marketEvents[evtIndex];
+    const target   = Math.random() < 0.5 ? a : b;
+    const other    = target === a ? b : a;
+
+    // 2) cria overlay e modal container
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     const modal = document.createElement('div');
-    modal.className = 'modal-content'; modal.style.position = 'relative';
+    modal.className = 'modal-content';
+    modal.style.position = 'relative';
+
+    // 3) botão fechar
     const closeBtn = document.createElement('span');
-    closeBtn.className = 'modal-close'; closeBtn.innerHTML = '×';
+    closeBtn.className = 'modal-close';
+    closeBtn.innerHTML = '&times;';
     modal.appendChild(closeBtn);
 
-    // Formulário
+    // 4) monta o form sem market-event no topo
     const form = document.createElement('form');
     form.className = 'modal-form';
     form.innerHTML = `
@@ -278,6 +287,22 @@ function bindBattleModal(divBattle, a, b) {
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
 
+    // 5) injetar market-event dentro da div afetada, acima do <h3>
+    const targetId = target === a
+      ? `#modal-companyA-${a.empresa_id}`
+      : `#modal-companyB-${b.empresa_id}`;
+    const targetDiv = modal.querySelector(targetId);
+    const evtP = document.createElement('p');
+    evtP.className = `market-event ${evt.delta > 0 ? 'bonus' : 'onus'}`;
+    evtP.innerHTML = `
+      ${evt.icon}
+      <strong>${evt.name}</strong>: ${evt.description}
+      (${evt.delta > 0 ? 'Bônus' : 'Ônus'} ${evt.delta > 0 ? '+' : ''}${evt.delta} pts)
+    `;
+    const h3 = targetDiv.querySelector('h3');
+    targetDiv.insertBefore(evtP, h3);
+
+    // 6) funções de fechar modal
     function closeModal() {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
@@ -285,17 +310,20 @@ function bindBattleModal(divBattle, a, b) {
     closeBtn.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => e.target === overlay && closeModal());
 
+    // 7) handler de submit
     form.addEventListener('submit', async ev => {
       ev.preventDefault();
 
-      // 1) Coleta checks e atualiza stats
+      // coleta checkboxes marcados
       const aChecks = Array.from(form.querySelectorAll('input[name^="a_score"]:checked'));
       const bChecks = Array.from(form.querySelectorAll('input[name^="b_score"]:checked'));
+
+      // atualiza stats das startups
       function updateStats(s, checks) {
         checks.forEach(chk => {
           switch (chk.value) {
-            case '6': s.stats.convincing_pitch++; break;
-            case '3': s.stats.good_user_traction++; break;
+            case '6':  s.stats.convincing_pitch++; break;
+            case '3':  s.stats.good_user_traction++; break;
             case '-4': s.stats.bugs++; break;
             case '-6': s.stats.angry_investor++; break;
             case '-8': s.stats.fake_news++; break;
@@ -305,11 +333,11 @@ function bindBattleModal(divBattle, a, b) {
       updateStats(a, aChecks);
       updateStats(b, bChecks);
 
-      // 2) Soma dos deltas
+      // soma dos deltas dos checkboxes
       const deltaA = aChecks.reduce((sum, c) => sum + Number(c.value), 0);
       const deltaB = bChecks.reduce((sum, c) => sum + Number(c.value), 0);
 
-      // 3) Persiste e atualiza UI
+      // aplica deltas iniciais no backend e UI
       await patchPoints(a.empresa_id, deltaA);
       await patchPoints(b.empresa_id, deltaB);
       a.pts_totais += deltaA;
@@ -317,7 +345,17 @@ function bindBattleModal(divBattle, a, b) {
       divBattle.querySelector('.pts-a').textContent = a.pts_totais;
       divBattle.querySelector('.pts-b').textContent = b.pts_totais;
 
-      // 4) Decide empate → Shark Fight
+      // aplica delta do market-event
+      await patchPoints(target.empresa_id, evt.delta);
+      target.pts_totais += evt.delta;
+      divBattle.querySelector(
+        target === a ? '.pts-a' : '.pts-b'
+      ).textContent = target.pts_totais;
+      // atualiza estatística de market-event
+      if (evt.delta > 0) target.stats.bonusEvents = (target.stats.bonusEvents||0) + 1;
+      else            target.stats.onusEvents  = (target.stats.onusEvents||0)  + 1;
+
+      // decide empate → Shark Fight
       let champ = null;
       if (a.pts_totais > b.pts_totais) {
         champ = a;
@@ -328,8 +366,9 @@ function bindBattleModal(divBattle, a, b) {
         await patchPoints(sharkWinner.empresa_id, 2);
         sharkWinner.pts_totais += 2;
         sharkWinner.stats.sharkFights++;
-        divBattle.querySelector(sharkWinner === a ? '.pts-a' : '.pts-b')
-          .textContent = sharkWinner.pts_totais;
+        divBattle.querySelector(
+          sharkWinner === a ? '.pts-a' : '.pts-b'
+        ).textContent = sharkWinner.pts_totais;
         const wDiv = divBattle.querySelector(
           sharkWinner === a
             ? `#companyA-${a.empresa_id}`
@@ -339,13 +378,14 @@ function bindBattleModal(divBattle, a, b) {
         champ = sharkWinner;
       }
 
-      // 5) Bônus +30 ao campeão
+      // bônus de vencedor +30
       await patchPoints(champ.empresa_id, 30);
       champ.pts_totais += 30;
-      divBattle.querySelector(champ === a ? '.pts-a' : '.pts-b')
-        .textContent = champ.pts_totais;
+      divBattle.querySelector(
+        champ === a ? '.pts-a' : '.pts-b'
+      ).textContent = champ.pts_totais;
 
-      // 6) Marca vencedor e bloqueia clique
+      // marca vencedor, bloqueia clique e guarda
       const selId = champ === a
         ? `#companyA-${a.empresa_id}`
         : `#companyB-${b.empresa_id}`;
@@ -356,13 +396,13 @@ function bindBattleModal(divBattle, a, b) {
       closeModal();
       await carregarEmpresas();
 
-      // 7) Habilita próxima rodada
+      // habilita próxima rodada se necessário
       const totalBattles = Math.floor(participants.length / 2);
       if (winners.length === totalBattles) {
         document.querySelector('.next-round').disabled = false;
       }
 
-      // 8) Se final, exibe campeão
+      // se for final, mostra campeão
       if (participants.length === 2 && winners.length === 1) {
         tournamentChampion = winners[0];
         showWinner();
@@ -371,8 +411,9 @@ function bindBattleModal(divBattle, a, b) {
   });
 }
 
+
 // —————————————————————————————
-// Mostrar campeão / Relatório 
+// Campeão / Relatório / Excel / Reset
 // —————————————————————————————
 function showWinner() {
   const champ = tournamentChampion;
@@ -384,10 +425,9 @@ function showWinner() {
       <p>Pontuação Final: ${champ.pts_totais}</p>
     </div>
     <div class="btn__other">
-    <button class="relatorio">Relatório de batalhas</button>
-    <button class="excel">Gerar relatório EXCEL</button>
+      <button class="relatorio">Relatório de batalhas</button>
+      <button class="excel">Gerar relatório EXCEL</button>
     </div>
-    
     <button class="again">Jogar novamente</button>
   `;
   document.querySelector('.relatorio').addEventListener('click', showReport);
@@ -402,9 +442,10 @@ function showReport() {
     <table class="report">
       <thead>
         <tr>
-          <th>Rank</th><th>Startup</th><th>Pontuação</th>
+          <th>Rank</th><th>Startup</th><th>Pontos</th>
           <th>Pitches</th><th>Bugs</th><th>Trações</th>
-          <th>Inv. Irritados</th><th>Fake News</th><th>Shark Fights</th><th>Slogan</th>
+          <th>Inv.Irritados</th><th>FakeNews</th>
+          <th>SharkFights</th><th>Slogan</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -413,12 +454,10 @@ function showReport() {
   `;
   allStartups.sort((x, y) => y.pts_totais - x.pts_totais);
   const tbody = body.querySelector('tbody');
-  allStartups.forEach((s, idx) => {
+  allStartups.forEach((s, i) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${idx + 1}</td>
-      <td>${s.nome}</td>
-      <td>${s.pts_totais}</td>
+      <td>${i + 1}</td><td>${s.nome}</td><td>${s.pts_totais}</td>
       <td>${s.stats.convincing_pitch}</td>
       <td>${s.stats.bugs}</td>
       <td>${s.stats.good_user_traction}</td>
@@ -432,77 +471,32 @@ function showReport() {
   document.querySelector('.back').addEventListener('click', showWinner);
 }
 
-// —————————————————————————————
-// Quando o torneio acaba, apaga tudo do banco e reinicia a tela
-// —————————————————————————————
 async function resetDB() {
-  try {
-    // 1) Apaga cada empresa via DELETE /empresas/:id
-    const deletes = allStartups.map(s =>
-      fetch(`/empresas/${s.empresa_id}`, { method: 'DELETE' })
-    );
-    await Promise.all(deletes);
-
-    // 2) Limpa estado local
-    allStartups = [];
-    participants = [];
-    winners = [];
-
-    // 3) Volta pra tela inicial recarregando a página
-    window.location.reload();
-  } catch (err) {
-    console.error('Erro ao resetar DB:', err);
-  }
+  await Promise.all(allStartups.map(s =>
+    fetch(`/empresas/${s.empresa_id}`, { method: 'DELETE' })
+  ));
+  window.location.reload();
 }
 
-// —————————————————————————————
-// Gera e faz download de um CSV (macro no Excel) com a mesma tabela do relatório
-// —————————————————————————————
 function gerarExcel() {
-  // 1) Cabeçalhos da planilha
   const headers = [
-    'Rank',
-    'Startup',
-    'Pontuação Final',
-    'Pitches',
-    'Bugs',
-    'Boa tração de usuários',
-    'Investidores Irritados',
-    'Fake News',
-    'Shark Fights',
-    'Slogan'
+    'Rank', 'Startup', 'Pontos', 'Pitches', 'Bugs', 'Trações',
+    'Inv.Irritados', 'FakeNews', 'SharkFights', 'Slogan'
   ];
-
-  // 2) Ordena e monta as linhas
   const sorted = [...allStartups].sort((a, b) => b.pts_totais - a.pts_totais);
   const rows = sorted.map((s, i) => [
-    i + 1,
-    s.nome,
-    s.pts_totais,
-    s.stats.convincing_pitch,
-    s.stats.bugs,
-    s.stats.good_user_traction,
-    s.stats.angry_investor,
-    s.stats.fake_news,
-    s.stats.sharkFights,
+    i + 1, s.nome, s.pts_totais,
+    s.stats.convincing_pitch, s.stats.bugs,
+    s.stats.good_user_traction, s.stats.angry_investor,
+    s.stats.fake_news, s.stats.sharkFights,
+    s.stats.marketBonus, s.stats.marketOnus,
     `"${s.slogan.replace(/"/g, '""')}"`
   ]);
-
-  // 3) Use ponto‐e‐vírgula como separador
   const sep = ';';
-  const csv = [
-    headers.join(sep),
-    ...rows.map(r => r.join(sep))
-  ].join('\r\n');
-
-  // 4) Cria o arquivo e dispara o download
+  const csv = [headers.join(sep), ...rows.map(r => r.join(sep))].join('\r\n');
   const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'relatorio_batalhas.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = 'relatorio.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
