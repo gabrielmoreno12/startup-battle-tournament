@@ -7,38 +7,40 @@ let allStartups = [];
 let tournamentChampion = null;
 
 // —————————————————————————————
-// Quando o DOM estiver pronto...
+// DOMContentLoaded: só monta a lista lateral e cadastra o botão Start
 // —————————————————————————————
 window.addEventListener('DOMContentLoaded', async () => {
-  // 1) Carrega lista lateral
-  await carregarEmpresas();
+  await carregarEmpresas();  // só a listagem lateral
 
-  // 2) Carrega do backend, inicializa stats e guarda em allStartups
-  const fetched = await fetchEmpresas();
-  allStartups = fetched.map(e => ({
-    ...e,
-    pts_totais: e.pts_totais || 0,
-    stats: {
-      convincing_pitch: 0,
-      bugs: 0,
-      good_user_traction: 0,
-      angry_investor: 0,
-      fake_news: 0,
-      sharkFights: 0
-    }
-  }));
-
-  // 3) Start: define participantes iniciais e dispara primeira renderização
   const startBtn = document.querySelector('.start');
   if (startBtn) {
-    startBtn.addEventListener('click', () => {
-      participants = allStartups.slice();
+    startBtn.addEventListener('click', async () => {
+      // 1) busca fresh do servidor
+      const fresh = await fetchEmpresas();
+      // 2) inicializa allStartups + stats
+      allStartups = fresh.map(e => ({
+        ...e,
+        pts_totais: e.pts_totais || 0,
+        stats: {
+          convincing_pitch: 0,
+          bugs: 0,
+          good_user_traction: 0,
+          angry_investor: 0,
+          fake_news: 0,
+          sharkFights: 0
+        }
+      }));
+      // 3) define participantes para o round
+      participants = [...allStartups];
       winners = [];
       round = 1;
-      renderBattles(true);
+
+      // 4) limpa a tela e renderiza a primeira rodada
+      await renderBattles(true);
     });
   }
 });
+
 
 // —————————————————————————————
 // Helpers de API
@@ -381,10 +383,15 @@ function showWinner() {
       <p>${champ.slogan}</p>
       <p>Pontuação Final: ${champ.pts_totais}</p>
     </div>
+    <div class="btn__other">
     <button class="relatorio">Relatório de batalhas</button>
+    <button class="excel">Gerar relatório EXCEL</button>
+    </div>
+    
     <button class="again">Jogar novamente</button>
   `;
   document.querySelector('.relatorio').addEventListener('click', showReport);
+  document.querySelector('.excel').addEventListener('click', gerarExcel);
   document.querySelector('.again').addEventListener('click', resetDB);
 }
 
@@ -446,4 +453,56 @@ async function resetDB() {
   } catch (err) {
     console.error('Erro ao resetar DB:', err);
   }
+}
+
+// —————————————————————————————
+// Gera e faz download de um CSV (macro no Excel) com a mesma tabela do relatório
+// —————————————————————————————
+function gerarExcel() {
+  // 1) Cabeçalhos da planilha
+  const headers = [
+    'Rank',
+    'Startup',
+    'Pontuação Final',
+    'Pitches',
+    'Bugs',
+    'Boa tração de usuários',
+    'Investidores Irritados',
+    'Fake News',
+    'Shark Fights',
+    'Slogan'
+  ];
+
+  // 2) Ordena e monta as linhas
+  const sorted = [...allStartups].sort((a, b) => b.pts_totais - a.pts_totais);
+  const rows = sorted.map((s, i) => [
+    i + 1,
+    s.nome,
+    s.pts_totais,
+    s.stats.convincing_pitch,
+    s.stats.bugs,
+    s.stats.good_user_traction,
+    s.stats.angry_investor,
+    s.stats.fake_news,
+    s.stats.sharkFights,
+    `"${s.slogan.replace(/"/g, '""')}"`
+  ]);
+
+  // 3) Use ponto‐e‐vírgula como separador
+  const sep = ';';
+  const csv = [
+    headers.join(sep),
+    ...rows.map(r => r.join(sep))
+  ].join('\r\n');
+
+  // 4) Cria o arquivo e dispara o download
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'relatorio_batalhas.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
