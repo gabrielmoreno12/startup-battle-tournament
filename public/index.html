@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="CSS/style.css">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <div class="body">
+    <div class="operation register--company">
+      <h2>Creating company</h2>
+      <form class="form form--insert__company">
+        <!-- Campo de ID removido pois agora ele é gerado automaticamente -->
+        <input type="text" class="form__input form__input--nome" placeholder="name" required />
+        <input type="text" class="form__input form__input--slogan" placeholder="slogan" required />
+        <input type="text" class="form__input form__input--ano" placeholder="year founded (ex: 2001)" required />
+        <button class="form__btn form__btn--transfer">Save</button>
+      </form>
+    </div>
+    <p class="message" id="message--insert"></p>
+
+    <div class="operation operation--transfer">
+      <h2>Deleting company</h2>
+      <form class="form form--delete__company">
+        <input type="number" class="form__input form__input--id" placeholder="id" required />
+        <button class="form__btn form__btn--transfer">Delete</button>
+      </form>
+    </div>
+    <p class="message" id="message--delete"></p>
+
+    <button class="start">start</button>
+
+    <div class="companies">
+      <h2>Empresas cadastradas</h2>
+      <div class="companies__row">
+        <!-- Empresas serão carregadas aqui -->
+      </div>
+    </div>
+
+    <div class="battles__container"></div>
+  </div>
+
+  
+  <script src="script.js"></script>
+</body>
+
+</html>

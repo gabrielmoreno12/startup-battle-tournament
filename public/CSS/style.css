@@ -1,0 +1,41 @@
+/* estiliza o overlay que cobre toda a tela e aplica blur no fundo */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop‑filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* container do conteúdo do modal */
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* botão de fechar no cantinho */
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* opcional: aumenta a escala do clone da batalha */
+.modal-content .divBattle {
+  transform: scale(1.1);
+}
+
+.company-winner {
+  background-color: #d4edda;
+  /* verde claro */
+}
