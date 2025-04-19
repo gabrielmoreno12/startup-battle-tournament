@@ -301,13 +301,13 @@ function criarDupla(a, b, container) {
   div.style.cursor = 'pointer';
   div.innerHTML = `
     <div class="companyBattle" id="companyA-${a.empresa_id}">
-      <h3>${a.nome}</h3>
-      <p><strong>Pontuação:</strong> <span class="pts-a">${a.pts_totais}</span></p>
+      <h3 class="name-header">${a.nome}</h3>
+      <p>Pontuação: <span class="pts-a">${a.pts_totais}</span></p>
     </div>
-    <p><strong>VS</strong></p>
+    <p class="vs-p"><strong>VS</strong></p>
     <div class="companyBattle" id="companyB-${b.empresa_id}">
       <h3>${b.nome}</h3>
-      <p><strong>Pontuação:</strong> <span class="pts-b">${b.pts_totais}</span></p>
+      <p>Pontuação: <span class="pts-b">${b.pts_totais}</span></p>
     </div>
     <hr>
   `;
