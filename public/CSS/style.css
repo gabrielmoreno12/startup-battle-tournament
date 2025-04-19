@@ -74,6 +74,7 @@ body {
 }
 
 .start,
+.next-round,
 #btn-start {
   display: block;
   /* faz o elemento respeitar margin auto */
@@ -89,6 +90,7 @@ body {
   border-radius: 15px;
 }
 .start:hover,
+.next-round,
 #btn-start:hover {
   background: linear-gradient(45deg, #a4161a, #16488e);
   cursor: pointer;
@@ -96,7 +98,9 @@ body {
   border-radius: 15px;
 }
 
+.next-round,
 .start:disabled {
+  cursor: not-allowed;
   background: #ccc;
   color: #666;
   cursor: not‑allowed;
