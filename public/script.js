@@ -265,7 +265,7 @@ async function renderBattles(clearPage = false) {
   if (clearPage) {
     const stage = getStageName(participants.length);
     document.querySelector('.body').innerHTML = `
-      <h2 class="round-header">Rodada ${round}${stage ? ' – ' + stage : ''}</h2>
+      <h2 class="round-header">Rodada ${round}<span class="stage">${stage ? ' – ' + stage : ''}<span></h2>
       <div class="battles__container"></div>
       <button class="next-round" disabled>Avançar para próxima rodada</button>
     `;
@@ -503,7 +503,7 @@ function bindBattleModal(divBattle, a, b) {
 function showWinner() {
   const champ = tournamentChampion;
   document.querySelector('.body').innerHTML = `
-    <h1>VENCEDOR</h1>
+    <h1 class="winner-header">VENCEDOR</h1>
     <div class="companyWinner">
       <h2>${champ.nome}</h2>
       <p>${champ.slogan}</p>

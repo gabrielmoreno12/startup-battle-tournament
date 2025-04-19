@@ -244,6 +244,21 @@ body {
 }
 
 
+.stage,
+.winner-header {
+  font-family: 'Trade Winds', sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
+
 .modal-overlay {
   position: fixed;
   inset: 0;
