@@ -143,10 +143,9 @@ async function carregarEmpresas() {
   container.innerHTML = empresas.map(e => `
     <div class="company">
       <p><strong>ID:</strong> ${e.empresa_id}</p>
-      <p><strong>Nome:</strong> ${e.nome}</p>
-      <p><strong>Slogan:</strong> ${e.slogan}</p>
+      <p>${e.nome}</p>
+      <p>${e.slogan}</p>
       <p><strong>Ano fundação:</strong> ${e.ano_fund}</p>
-      <hr>
     </div>
   `).join('');
 
