@@ -306,7 +306,7 @@ function criarDupla(a, b, container) {
     </div>
     <p class="vs-p"><strong>VS</strong></p>
     <div class="companyBattle" id="companyB-${b.empresa_id}">
-      <h3>${b.nome}</h3>
+      <h3 class="name-header">${b.nome}</h3>
       <p>Pontuação: <span class="pts-b">${b.pts_totais}</span></p>
     </div>
     <hr>
@@ -343,7 +343,7 @@ function bindBattleModal(divBattle, a, b) {
       <div class="modal-battle">
         <div class="companyBattle" id="modal-companyA-${a.empresa_id}">
           <h3>${a.nome}</h3>
-          <p><strong>Pontuação:</strong> ${a.pts_totais}</p>
+          <p>Pontuação: ${a.pts_totais}</p>
           <div class="checkboxes">
             <label><input type="checkbox" name="a_score1" value="6" /> Pitch convincente (+6)</label>
             <label><input type="checkbox" name="a_score2" value="3" /> Boa tração de usuários (+3)</label>
@@ -352,10 +352,10 @@ function bindBattleModal(divBattle, a, b) {
             <label><input type="checkbox" name="a_score5" value="-8" /> Fake news no pitch (–8)</label>
           </div>
         </div>
-        <p><strong>VS</strong></p>
+        <p class="vs-p"><strong>VS</strong></p>
         <div class="companyBattle" id="modal-companyB-${b.empresa_id}">
           <h3>${b.nome}</h3>
-          <p><strong>Pontuação:</strong> ${b.pts_totais}</p>
+          <p>Pontuação: ${b.pts_totais}</p>
           <div class="checkboxes">
             <label><input type="checkbox" name="b_score1" value="6" /> Pitch convincente (+6)</label>
             <label><input type="checkbox" name="b_score2" value="3" /> Boa tração de usuários (+3)</label>
@@ -365,7 +365,7 @@ function bindBattleModal(divBattle, a, b) {
           </div>
         </div>
       </div>
-      <button type="submit">Salvar</button>
+      <button class="btn-salvar" type="submit">✓</button>
     `;
     modal.appendChild(form);
     overlay.appendChild(modal);
