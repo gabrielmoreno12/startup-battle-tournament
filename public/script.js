@@ -64,6 +64,56 @@ window.addEventListener('DOMContentLoaded', async () => {
     // finalmente renderiza a primeira batalha
     await renderBattles(true);
   });
+  const btnHelp = document.getElementById('btn-help');
+  btnHelp.addEventListener('click', () => {
+    // 1) Cria overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    // 2) Cria container do modal
+    const modal = document.createElement('div');
+    modal.className = 'modal-content';
+    modal.style.position = 'relative';
+
+    // 3) Botão de fechar
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'modal-close';
+    closeBtn.innerHTML = '&times;';
+    modal.appendChild(closeBtn);
+
+    // 4) Conteúdo das regras
+    const title = document.createElement('h2');
+    title.textContent = 'Regras da Startup Arena';
+    modal.appendChild(title);
+
+    const ul = document.createElement('ul');
+    ul.style.textAlign = 'left';
+    ul.innerHTML = `
+
+    <li> Cadastre de 4 a 8 startups antes de iniciar.</li>
+    <li> Cada batalha soma pontos via checkboxes (Pitch +6, Tração +3, Bugs –4, Investor –6, Fake News –8).</li>
+    <li> Se der empate, rola o Shark Fight (ganhador aleatório +2 pontos).</li>
+    <li> Cada fase premia o vencedor com +30 pontos extras.</li>
+    <li> Market Events aleatórios acontecem antes do pitch (bônus ou ônus, exibidos ao lado do nome).</li>
+    <li> Ao fim, gera‑se um relatório e você pode baixar em CSV/Excel.</li>
+    `;
+    modal.appendChild(ul);
+
+    // 5) Monta e exibe
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    // 6) Fecha modal
+    function closeModal() {
+      document.body.removeChild(overlay);
+      document.body.style.overflow = '';
+    }
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeModal();
+    });
+  });
 });
 
 // —————————————————————————————
@@ -253,9 +303,9 @@ function bindBattleModal(divBattle, a, b) {
   divBattle.addEventListener('click', () => {
     // 1) sorteia um Market Event e quem será afetado
     const evtIndex = Math.floor(Math.random() * marketEvents.length);
-    const evt      = marketEvents[evtIndex];
-    const target   = Math.random() < 0.5 ? a : b;
-    const other    = target === a ? b : a;
+    const evt = marketEvents[evtIndex];
+    const target = Math.random() < 0.5 ? a : b;
+    const other = target === a ? b : a;
 
     // 2) cria overlay e modal container
     const overlay = document.createElement('div');
@@ -341,8 +391,8 @@ function bindBattleModal(divBattle, a, b) {
       function updateStats(s, checks) {
         checks.forEach(chk => {
           switch (chk.value) {
-            case '6':  s.stats.convincing_pitch++; break;
-            case '3':  s.stats.good_user_traction++; break;
+            case '6': s.stats.convincing_pitch++; break;
+            case '3': s.stats.good_user_traction++; break;
             case '-4': s.stats.bugs++; break;
             case '-6': s.stats.angry_investor++; break;
             case '-8': s.stats.fake_news++; break;
@@ -371,8 +421,8 @@ function bindBattleModal(divBattle, a, b) {
         target === a ? '.pts-a' : '.pts-b'
       ).textContent = target.pts_totais;
       // atualiza estatística de market-event
-      if (evt.delta > 0) target.stats.bonusEvents = (target.stats.bonusEvents||0) + 1;
-      else            target.stats.onusEvents  = (target.stats.onusEvents||0)  + 1;
+      if (evt.delta > 0) target.stats.bonusEvents = (target.stats.bonusEvents || 0) + 1;
+      else target.stats.onusEvents = (target.stats.onusEvents || 0) + 1;
 
       // decide empate → Shark Fight
       let champ = null;
