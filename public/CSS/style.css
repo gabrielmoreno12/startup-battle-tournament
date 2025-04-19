@@ -1,4 +1,89 @@
-/* estiliza o overlay que cobre toda a tela e aplica blur no fundo */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Trade+Winds&display=swap');
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background:
+    linear-gradient(to bottom right,
+      #16488e 0%,
+      #16488e 40%,
+      transparent 70%,
+      transparent 100%),
+    linear-gradient(to top left,
+      #a4161a 0%,
+      #a4161a 40%,
+      transparent 70%,
+      transparent 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+#welcome h1 {
+  font-size: 6rem;
+  font-family: 'Trade Winds', sans-serif;
+  color: transparent;
+  background: linear-gradient(45deg, #16488e, #a4161a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: 0;
+}
+
+#welcome h1:hover {
+  color: transparent;
+  transition-delay: 2s;
+  background: linear-gradient(45deg, #a4161a, #16488e);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+#welcome p {
+  font-size: 2rem;
+  font-family: 'Trade Winds', sans-serif;
+  color: transparent;
+  background: linear-gradient(45deg, #a4161a, #16488e);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+#welcome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  width: 65vw;
+  height: 50vh;
+  margin: 180px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+
+  opacity: 0;
+  transform: translateY(50px);
+  animation: slideUp 0.7s ease-out forwards;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#btn-start {
+  font-size: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Trade Winds', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(45deg, #16488e, #a4161a);
+  cursor: pointer;
+  border: none;
+  border-radius: 15px;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

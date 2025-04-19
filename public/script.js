@@ -22,10 +22,27 @@ let tournamentChampion = null;
 // DOMContentLoaded: monta lista lateral e cadastra Start
 // —————————————————————————————
 window.addEventListener('DOMContentLoaded', async () => {
+  const welcome = document.getElementById('welcome');
+  const mainApp = document.getElementById('main-app');
+  const btnWelcome = document.getElementById('btn-start');
+
+  // 1) Esconde a aplicação principal no carregamento
+  mainApp.style.display = 'none';
+
+  // 2) Ação do botão de boas‑vindas: só mostra a UI principal
+  btnWelcome.addEventListener('click', () => {
+    welcome.style.display = 'none';
+    mainApp.style.display = 'block';
+  });
+
+  // 3) Carrega lista lateral normalmente (para o usuário criar/deletar antes de iniciar)
   await carregarEmpresas();
 
-  document.querySelector('.start')?.addEventListener('click', async () => {
+  // 4) Só agora cadastramos o .start que realmente inicia o torneio
+  document.querySelector('.start').addEventListener('click', async () => {
+    // busca fresh do servidor
     const fresh = await fetchEmpresas();
+    // inicializa estatísticas
     allStartups = fresh.map(e => ({
       ...e,
       pts_totais: e.pts_totais || 0,
@@ -40,9 +57,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         marketOnus: 0
       }
     }));
+    // define participantes para a rodada 1
     participants = [...allStartups];
     winners = [];
     round = 1;
+    // finalmente renderiza a primeira batalha
     await renderBattles(true);
   });
 });
