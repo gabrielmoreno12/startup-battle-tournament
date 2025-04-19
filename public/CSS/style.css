@@ -98,8 +98,9 @@ body {
   border-radius: 15px;
 }
 
-.next-round,
-.start:disabled {
+.next-round:disabled,
+.start:disabled,
+.form__btn:disabled {
   cursor: not-allowed;
   background: #ccc;
   color: #666;
@@ -150,6 +151,10 @@ body {
   animation: slideUp 0.7s ease-out forwards;
 }
 
+.companies h2 {
+  text-align: center;
+}
+
 .companies__row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -168,10 +173,75 @@ body {
 }
 
 
+/* 1. Inclui padding/border no cálculo de width/height */
+.form__input,
+.form__btn {
+  box-sizing: border-box;
+}
 
+/* 2. Mesma altura e centraliza o conteúdo */
+.form__input,
+.form__btn {
+  display: inline-flex;
+  align-items: center;
+  /* centraliza verticalmente */
+  justify-content: center;
+  /* opcional para botões */
+  height: 3rem;
+  /* altura fixa */
+  line-height: 1;
+  /* não conflita com o flex */
+}
 
+/* mantém seu padding e fontes */
+.form__input {
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 0 1rem;
+  font-size: 1rem;
+  max-width: 200px;
+  width: 100%;
+  border: none;
+}
 
+.form__btn {
+  padding: 0 1rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(45deg, #16488e, #a4161a);
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
 
+.message {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  background: rgba(6, 216, 13, 0.8);
+  border-radius: 15px;
+  color: #fff;
+  font-size: 0.9rem;
+  z-index: 9999;
+
+  opacity: 0;
+  transform: translateY(-1rem);
+  /* começa 1rem acima */
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  pointer-events: none;
+}
+.message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.message.error {
+  background: rgba(200, 30, 30, 0.9);
+}
 
 
 .modal-overlay {

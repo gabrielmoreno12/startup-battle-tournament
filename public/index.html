@@ -22,23 +22,23 @@
   <div id="main-app">
     <div class="body">
       <div class="operation register--company">
-        <h2>Register startup</h2>
+        <h2>📝 Cadastrar Startup</h2>
         <form class="form form--insert__company">
           <!-- Campo de ID removido pois agora ele é gerado automaticamente -->
-          <input type="text" class="form__input form__input--nome" placeholder="name" required />
-          <input type="text" class="form__input form__input--slogan" placeholder="slogan" required />
-          <input type="text" maxlength="4" class="form__input form__input--ano" placeholder="year founded (ex: 2001)"
+          <input type="text" class="form__input form__input--nome" placeholder="Nome" required />
+          <input type="text" class="form__input form__input--slogan" placeholder="Slogan" required />
+          <input type="text" maxlength="4" class="form__input form__input--ano" placeholder="Ano de fundação"
             required />
-          <button class="form__btn form__btn--transfer">Save</button>
+          <button class="form__btn form__btn--transfer">✓</button>
         </form>
       </div>
       <p class="message" id="message--insert"></p>
 
       <div class="operation operation--transfer">
-        <h2>Delete startup</h2>
+        <h2>❌ Apagar cadastro</h2>
         <form class="form form--delete__company">
-          <input type="number" class="form__input form__input--id" placeholder="id" required />
-          <button class="form__btn form__btn--transfer">Delete</button>
+          <input type="number" class="form__input form__input--id" placeholder="ID" required />
+          <button class="form__btn form__btn--transfer">&rightarrow;</button>
         </form>
       </div>
       <p class="message" id="message--delete"></p>

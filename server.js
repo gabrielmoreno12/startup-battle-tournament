@@ -40,7 +40,7 @@ app.delete('/empresas/:id', async (req, res) => {
     const deletedRows = await db.deleteCompany(id);
 
     if (deletedRows === 0) {
-      return res.status(404).json({ error: 'Empresa não encontrada' });
+      return res.status(404).json({ error: 'Empresa não encontrada!' });
     }
 
     res.json({ message: 'Empresa deletada com sucesso!' });

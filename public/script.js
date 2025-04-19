@@ -156,12 +156,23 @@ async function carregarEmpresas() {
     .disabled = !(count === 4 || count === 8);
 }
 
+// exibe a .message fixa no canto por 2s
+function toast(text, isError = false) {
+  const msgEl = document.querySelector('.message');
+  msgEl.textContent = text;
+  msgEl.classList.toggle('error', isError);
+  msgEl.classList.add('show');
+  setTimeout(() => msgEl.classList.remove('show'), 2000);
+}
+
 // —————————————————————————————
 // INSERT
 // —————————————————————————————
 document.querySelector('.form--insert__company')
   .addEventListener('submit', async ev => {
     ev.preventDefault();
+
+    // Monta o objeto a ser enviado
     const nextID = await generate_ID();
     const company = {
       EMPRESA_ID: nextID,
@@ -169,25 +180,27 @@ document.querySelector('.form--insert__company')
       SLOGAN: document.querySelector('.form__input--slogan').value.trim(),
       ANO_FUND: document.querySelector('.form__input--ano').value.trim()
     };
+
     try {
       const res = await fetch('/empresas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(company)
       });
-      const msg = document.getElementById('message--insert');
       const obj = await res.json();
+
       if (res.ok) {
-        msg.textContent = obj.message; msg.classList.remove('error');
+        // Atualiza listagem lateral
         await carregarEmpresas();
+        toast(obj.message, false);
       } else {
-        msg.textContent = obj.error; msg.classList.add('error');
+        toast(obj.error, true);
       }
     } catch (err) {
-      const msg = document.getElementById('message--insert');
-      msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
+      toast('Erro: ' + err.message, true);
     }
   });
+
 
 // —————————————————————————————
 // DELETE
@@ -195,21 +208,25 @@ document.querySelector('.form--insert__company')
 document.querySelector('.form--delete__company')
   .addEventListener('submit', async ev => {
     ev.preventDefault();
+
     const id = document.querySelector('.form__input--id').value.trim();
-    if (!id) return alert('Informe um ID válido');
+    if (!id) {
+      toast('Informe um ID válido', true);
+      return;
+    }
+
     try {
       const res = await fetch(`/empresas/${id}`, { method: 'DELETE' });
-      const msg = document.getElementById('message--delete');
       const obj = await res.json();
+
       if (res.ok) {
-        msg.textContent = obj.message; msg.classList.remove('error');
         await carregarEmpresas();
+        toast(obj.message, false);
       } else {
-        msg.textContent = obj.error; msg.classList.add('error');
+        toast(obj.error, true);
       }
     } catch (err) {
-      const msg = document.getElementById('message--delete');
-      msg.textContent = 'Erro: ' + err.message; msg.classList.add('error');
+      toast('Erro: ' + err.message, true);
     }
   });
 
