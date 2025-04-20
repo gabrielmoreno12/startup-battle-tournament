@@ -597,15 +597,15 @@ function showWinner() {
   document.querySelector('.body').innerHTML = `
     <h1 class="winner-header">VENCEDOR</h1>
     <div class="companyWinner">
-      <h2 class="champ">${champ.nome}</h2>
-      <p>${champ.slogan}</p>
-      <p>Pontuação Final: ${champ.pts_totais}</p>
+      <h2 class="champ-name">${champ.nome}</h2>
+      <p class="champ-slogan"><b>${champ.slogan}</b></p>
+      <p>Pontuação Final: <b>${champ.pts_totais}</b></p>
     </div>
     <div class="btn__other">
       <button class="relatorio">Relatório de batalhas</button>
       <button class="excel">Gerar relatório EXCEL</button>
+      <button class="again">Jogar novamente</button>
     </div>
-    <button class="again">Jogar novamente</button>
   `;
   document.querySelector('.relatorio').addEventListener('click', showReport);
   document.querySelector('.excel').addEventListener('click', gerarExcel);
