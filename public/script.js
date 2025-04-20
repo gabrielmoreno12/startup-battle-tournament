@@ -17,8 +17,9 @@ let participants = [];
 let winners = [];
 let allStartups = [];
 let tournamentChampion = null;
+let mascoteNum = 2;
 
-function openHelpDialog(text) {
+function openHelpDialog(titleHTML, textHTML) {
   // cria overlay
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -27,15 +28,15 @@ function openHelpDialog(text) {
   const char = document.createElement('img');
   char.src = 'assets/imgs/karin_sama.webp';
   char.alt = 'Guia da Startup Arena';
-  char.className = 'help-character-v2';
+  char.className = `help-character-v${mascoteNum}`;
   overlay.appendChild(char);
 
   // balão de fala
   const modal = document.createElement('div');
-  modal.className = 'modal-content help-dialog';   // note a classe help-dialog
+  modal.className = 'modal-content help-dialog';
   modal.style.position = 'relative';
 
-  // close
+  // botão fechar
   const closeBtn = document.createElement('span');
   closeBtn.className = 'modal-close';
   closeBtn.innerHTML = '&times;';
@@ -43,16 +44,16 @@ function openHelpDialog(text) {
 
   // título
   const title = document.createElement('h2');
-  title.textContent = 'Pronto para começar?';
+  title.textContent = titleHTML;
   modal.appendChild(title);
 
-  // conteúdo
+  // conteúdo dinâmico
   const ul = document.createElement('ul');
   ul.style.textAlign = 'left';
-  ul.innerHTML = `
-      Inicie cadastrando algumas empresas 
-    `;
+  ul.innerHTML = textHTML;
   modal.appendChild(ul);
+
+  // seta “caixa de diálogo” (triângulo e estilos já no CSS)
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
   document.body.style.overflow = 'hidden';
@@ -63,6 +64,7 @@ function openHelpDialog(text) {
   }
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', e => e.target === overlay && close());
+  mascoteNum++;
 }
 
 
@@ -82,7 +84,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   btnWelcome.addEventListener('click', () => {
     welcome.style.display = 'none';
     mainApp.style.display = 'block';
-    openHelpDialog();
+    openHelpDialog(
+      `Pronto para começar?`,
+      `Primeiro faça o cadastro de algumas startups!`);
   });
 
   // 3) Carrega lista lateral (inserir/deletar antes de iniciar)
@@ -104,6 +108,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     winners = [];
     round = 1;
     await renderBattles(true);
+    openHelpDialog(
+      `Agora começam as batalhas!`,
+      `Escolha a batalha que você deseja administrar e realize as pontuações necessárias, o vencedor de cada batalha passsa para próxima fase.`
+    )
   });
 
   // 5) Botão de Help: abre modal em formato de balão + personagem
