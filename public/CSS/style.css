@@ -359,6 +359,14 @@ body {
   z-index: 1;
 }
 
+.help-character-v2 {
+  position: absolute;
+  bottom: 8.5rem;
+  left: 44.5rem;
+  width: 300px;
+  pointer-events: none;
+  z-index: 1;
+}
 /* botão close */
 .modal-close {
   position: absolute;

@@ -18,6 +18,54 @@ let winners = [];
 let allStartups = [];
 let tournamentChampion = null;
 
+function openHelpDialog(text) {
+  // cria overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+
+  // personagem
+  const char = document.createElement('img');
+  char.src = 'assets/imgs/karin_sama.webp';
+  char.alt = 'Guia da Startup Arena';
+  char.className = 'help-character-v2';
+  overlay.appendChild(char);
+
+  // balão de fala
+  const modal = document.createElement('div');
+  modal.className = 'modal-content help-dialog';   // note a classe help-dialog
+  modal.style.position = 'relative';
+
+  // close
+  const closeBtn = document.createElement('span');
+  closeBtn.className = 'modal-close';
+  closeBtn.innerHTML = '&times;';
+  modal.appendChild(closeBtn);
+
+  // título
+  const title = document.createElement('h2');
+  title.textContent = 'Pronto para começar?';
+  modal.appendChild(title);
+
+  // conteúdo
+  const ul = document.createElement('ul');
+  ul.style.textAlign = 'left';
+  ul.innerHTML = `
+      Inicie cadastrando algumas empresas 
+    `;
+  modal.appendChild(ul);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  function close() {
+    document.body.removeChild(overlay);
+    document.body.style.overflow = '';
+  }
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', e => e.target === overlay && close());
+}
+
+
 // —————————————————————————————
 // DOMContentLoaded: monta lista lateral e cadastra Start
 // —————————————————————————————
@@ -34,6 +82,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   btnWelcome.addEventListener('click', () => {
     welcome.style.display = 'none';
     mainApp.style.display = 'block';
+    openHelpDialog();
   });
 
   // 3) Carrega lista lateral (inserir/deletar antes de iniciar)
