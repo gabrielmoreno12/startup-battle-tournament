@@ -72,7 +72,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // cria balão (modal)
     const modal = document.createElement('div');
-    modal.className = 'modal-content';
+    modal.className = 'modal-content help-dialog';
     modal.style.position = 'relative';
 
     // botão fechar

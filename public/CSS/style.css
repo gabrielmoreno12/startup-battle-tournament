@@ -46,12 +46,9 @@ body {
   background-clip: text;
 }
 
-
 #welcome {
   position: relative;
-  /* torna os absolutos filhos relativos a ele */
   overflow: visible;
-  /* garante que o img possa vazar */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -83,9 +80,7 @@ body {
 .next-round,
 #btn-start {
   display: block;
-  /* faz o elemento respeitar margin auto */
   margin: 1rem auto;
-  /* 1rem de espaço acima/abaixo, e auto nas laterais */
   font-size: 1.5rem;
   padding: 0.75rem 1.5rem;
   font-family: 'Trade Winds', sans-serif;
@@ -95,13 +90,11 @@ body {
   border: none;
   border-radius: 15px;
 }
+
 .start:hover,
-.next-round,
+.next-round:hover,
 #btn-start:hover {
   background: linear-gradient(45deg, #a4161a, #16488e);
-  cursor: pointer;
-  border: none;
-  border-radius: 15px;
 }
 
 .next-round:disabled,
@@ -110,15 +103,12 @@ body {
   cursor: not-allowed;
   background: #ccc;
   color: #666;
-  cursor: not‑allowed;
   opacity: 0.7;
 }
 
 .btn-salvar {
   display: block;
-  /* faz o elemento respeitar margin auto */
   margin-left: auto;
-  /* 1rem de espaço acima/abaixo, e auto nas laterais */
   font-size: 1rem;
   padding: 0.75rem 1.5rem;
   font-family: 'Trade Winds', sans-serif;
@@ -141,7 +131,6 @@ body {
   font-size: 3rem;
 }
 
-/* Coloca o emoji via ::before */
 #btn-help::before {
   content: "📘";
   font-size: 3rem;
@@ -149,14 +138,12 @@ body {
   line-height: 1;
 }
 
-/* No hover, muda o content */
 #btn-help:hover::before {
   content: "📖";
 }
 
 #main-app {
   width: 65vw;
-  /* height: 50vh;  remover */
   min-height: 50vh;
   height: 75vh;
   overflow-y: auto;
@@ -166,7 +153,6 @@ body {
   border-radius: 20px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
 
-  /* animação */
   opacity: 0;
   transform: translateY(50px);
   animation: slideUp 0.7s ease-out forwards;
@@ -193,28 +179,17 @@ body {
   padding: 1rem;
 }
 
-
-/* 1. Inclui padding/border no cálculo de width/height */
+/* inputs e botões */
 .form__input,
 .form__btn {
   box-sizing: border-box;
-}
-
-/* 2. Mesma altura e centraliza o conteúdo */
-.form__input,
-.form__btn {
   display: inline-flex;
   align-items: center;
-  /* centraliza verticalmente */
   justify-content: center;
-  /* opcional para botões */
   height: 3rem;
-  /* altura fixa */
   line-height: 1;
-  /* não conflita com o flex */
 }
 
-/* mantém seu padding e fontes */
 .form__input {
   border-radius: 5px;
   background-color: #fff;
@@ -240,21 +215,20 @@ body {
   bottom: 1rem;
   left: 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 4px;
-  background: rgba(6, 216, 13, 0.8);
   border-radius: 15px;
+  background: rgba(6, 216, 13, 0.8);
   color: #fff;
   font-size: 0.9rem;
   z-index: 9999;
 
   opacity: 0;
   transform: translateY(-1rem);
-  /* começa 1rem acima */
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;
   pointer-events: none;
 }
+
 .message.show {
   opacity: 1;
   transform: translateY(0);
@@ -273,11 +247,8 @@ body {
 .battles__container {
   display: flex;
   flex-wrap: wrap;
-  /* permite quebrar em várias linhas */
   justify-content: center;
-  /* centraliza as batalhas no container */
   gap: 1rem;
-  /* espaçamento entre elas */
   padding: 1rem;
 }
 
@@ -290,12 +261,10 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 1rem;
-  margin: 0.5rem 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   flex: 0 1 calc((100% - 3rem) / 2);
   max-width: 45%;
-  margin: 0;
 }
 
 .divBattle:hover {
@@ -304,20 +273,15 @@ body {
 }
 
 .vs-p {
-  /* font-family: 'Trade Winds', sans-serif; */
   font-size: 20px;
   display: block;
   width: 100%;
-  /* necessário para o gradient só no texto */
   font-weight: bold;
-  /* opcional */
   background: linear-gradient(45deg, #16488e, #a4161a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* para navegadores que suportam sem prefixo */
   color: transparent;
-  /* fallback */
   text-align: center;
 }
 
@@ -333,49 +297,59 @@ body {
   margin-left: 30%;
 }
 
-
+/* —————————————————————————————
+   Modal overlay (todos os modais)
+   ————————————————————————————— */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background-color: transparent;
-  /* sem escurecer */
   backdrop-filter: blur(8px);
-  /* ajusta o “quanto” do blur */
   -webkit-backdrop-filter: blur(8px);
-  /* Safari */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-content h2 {
-  text-align: center;
-}
-
-.modal-content {
+/* —————————————————————————————
+   1) Modal padrão (batalhas)
+   ————————————————————————————— */
+.modal-overlay .modal-content:not(.help-dialog) {
   background: #fff;
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   position: relative;
-  max-width: 400px;
-  /* centraliza no overlay */
   margin: auto;
 }
 
-/* Triângulo “cauda” da fala */
-.modal-content::after {
+/* —————————————————————————————
+   2) Modal de Help (balão de fala)
+   ————————————————————————————— */
+.modal-content.help-dialog {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 400px;
+  position: relative;
+  margin: auto;
+}
+
+.modal-content.help-dialog::after {
   content: "";
   position: absolute;
-  bottom: -20px;
-  /* vaza 20px para fora da base */
-  left: 40px;
-  /* posicione conforme o “ponto de fala” */
-  border-width: 20px 10px 0 10px;
+  bottom: -12px;
+  left: 2rem;
+  border-width: 12px 12px 0 12px;
   border-style: solid;
   border-color: #fff transparent transparent transparent;
 }
 
+/* personagem do help */
 .help-character {
   position: absolute;
   bottom: 2.5rem;
@@ -385,7 +359,7 @@ body {
   z-index: 1;
 }
 
-/* botão de fechar no cantinho */
+/* botão close */
 .modal-close {
   position: absolute;
   top: 0.5rem;
@@ -396,11 +370,6 @@ body {
 
 .companyBattle {
   text-align: center;
-}
-
-/* opcional: aumenta a escala do clone da batalha */
-.modal-content .divBattle {
-  transform: scale(1.1);
 }
 
 .company-winner {
@@ -416,13 +385,10 @@ body {
 .btn__other {
   display: flex;
   gap: 1rem;
-  /* espaçamento entre os botões */
   justify-content: center;
-  /* centraliza os botões */
   margin: 1rem 0;
 }
 
-/* 4) Para que o botão “Jogar novamente” também fique centralizado */
 .again {
   margin: 0 auto;
 }
