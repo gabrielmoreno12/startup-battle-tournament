@@ -17,9 +17,8 @@ let participants = [];
 let winners = [];
 let allStartups = [];
 let tournamentChampion = null;
-let mascoteNum = 2;
 
-function openHelpDialog(titleHTML, textHTML) {
+function openHelpDialog(titleHTML, textHTML, mascoteNum) {
   // cria overlay
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -57,6 +56,29 @@ function openHelpDialog(titleHTML, textHTML) {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
   document.body.style.overflow = 'hidden';
+  modal.style.background = '#fff';
+  modal.style.borderRadius = '8px';
+  modal.style.padding = '1rem';
+  modal.style.maxWidth = '90%';
+  modal.style.maxHeight = '90%';
+  modal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+  modal.style.zIndex = '2';
+
+  // triângulo no balão
+  modal.style.position = 'relative';
+  modal.insertAdjacentHTML('beforeend', `
+      <style>
+        .modal-content::after {
+          content: "";
+          position: absolute;
+          bottom: -12px;
+          left: 2rem;
+          border-width: 12px 12px 0 12px;
+          border-style: solid;
+          border-color: #fff transparent transparent transparent;
+        }
+      </style>
+    `);
 
   function close() {
     document.body.removeChild(overlay);
@@ -64,7 +86,6 @@ function openHelpDialog(titleHTML, textHTML) {
   }
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', e => e.target === overlay && close());
-  mascoteNum++;
 }
 
 
@@ -76,6 +97,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const mainApp = document.getElementById('main-app');
   const btnWelcome = document.getElementById('btn-start');
   const btnHelp = document.getElementById('btn-help');
+  const btnMarketEvents = document.getElementById('btn-market-events');
 
   // 1) Esconde a aplicação principal no carregamento
   mainApp.style.display = 'none';
@@ -86,7 +108,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     mainApp.style.display = 'block';
     openHelpDialog(
       `Pronto para começar?`,
-      `Primeiro faça o cadastro de algumas startups!`);
+      `Primeiro faça o cadastro de algumas startups!`,
+      2
+    );
   });
 
   // 3) Carrega lista lateral (inserir/deletar antes de iniciar)
@@ -110,9 +134,22 @@ window.addEventListener('DOMContentLoaded', async () => {
     await renderBattles(true);
     openHelpDialog(
       `Agora começam as batalhas!`,
-      `Escolha a batalha que você deseja administrar e realize as pontuações necessárias, o vencedor de cada batalha passsa para próxima fase.`
+      `Escolha a batalha que você deseja administrar e realize as pontuações necessárias, o vencedor de cada batalha passsa para próxima fase.`,
+      3
     );
   });
+
+  btnMarketEvents.addEventListener('click', () => {
+    const marketEventsInfo = `
+      😇 <b>Investidor Anjo</b>: Um investidor generoso entrou com capital extra! (+8 pts)<br>
+      📈 <b>Viral Trend</b>: Sua startup explodiu nas redes sociais! (+5 pts)<br>
+      🤖 <b>Avanço Tecnológico</b>: Seu time lançou um recurso revolucionário. (+4 pts)<br>
+      📰 <b>Matéria em Revista</b>: Você foi destaque em uma grande publicação! (+3 pts)<br>
+      💻 <b>Hackers Invadiram</b>: Um ataque cibernético tirou seu site do ar. (-4 pts)<br>
+      ⚖️ <b>Crise Regulatória</b>: Uma nova lei complicou seu modelo de negócio. (-6 pts)<br>
+    `;
+    openHelpDialog(`Market Events!`, marketEventsInfo, 4);
+  })
 
   // 5) Botão de Help: abre modal em formato de balão + personagem
   btnHelp.addEventListener('click', () => {

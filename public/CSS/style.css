@@ -142,6 +142,30 @@ body {
   content: "📖";
 }
 
+#btn-market-events {
+  position: absolute;
+  bottom: 8rem;
+  /* antes era 3rem igual ao help, agora sobe 2rem */
+  left: 3rem;
+  /* mesma distância da esquerda */
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid #16488e;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 3rem;
+}
+#btn-market-events::before {
+  content: "✨";
+  font-size: 3rem;
+  display: inline-block;
+  line-height: 1;
+}
+
+#btn-market-events:hover::before {
+  content: "🌟";
+}
+
 #main-app {
   width: 65vw;
   min-height: 50vh;
@@ -372,6 +396,15 @@ body {
   position: absolute;
   bottom: 7rem;
   left: 42.5rem;
+  width: 300px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.help-character-v4 {
+  position: absolute;
+  bottom: 6.5rem;
+  left: 35.5rem;
   width: 300px;
   pointer-events: none;
   z-index: 1;
