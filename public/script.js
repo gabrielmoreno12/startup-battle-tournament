@@ -111,7 +111,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     openHelpDialog(
       `Agora começam as batalhas!`,
       `Escolha a batalha que você deseja administrar e realize as pontuações necessárias, o vencedor de cada batalha passsa para próxima fase.`
-    )
+    );
   });
 
   // 5) Botão de Help: abre modal em formato de balão + personagem
@@ -666,7 +666,6 @@ function gerarExcel() {
     s.stats.convincing_pitch, s.stats.bugs,
     s.stats.good_user_traction, s.stats.angry_investor,
     s.stats.fake_news, s.stats.sharkFights,
-    s.stats.marketBonus, s.stats.marketOnus,
     `"${s.slogan.replace(/"/g, '""')}"`
   ]);
   const sep = ';';
