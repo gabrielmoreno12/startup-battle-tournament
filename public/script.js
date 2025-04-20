@@ -615,6 +615,7 @@ function showWinner() {
 function showReport() {
   const body = document.querySelector('.body');
   body.innerHTML = `
+    <div class="report-div">
     <h1>Relatório de Batalhas</h1>
     <table class="report">
       <thead>
@@ -627,6 +628,7 @@ function showReport() {
       </thead>
       <tbody></tbody>
     </table>
+    </div>
     <button class="back">Voltar</button>
   `;
   allStartups.sort((x, y) => y.pts_totais - x.pts_totais);

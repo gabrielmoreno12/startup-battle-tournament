@@ -418,10 +418,21 @@ body {
 
 .relatorio,
 .excel,
-.again {
+.again,
+.back {
   padding: 10px 10px;
   background-color: #fff;
   border-radius: 5px;
   cursor: pointer;
   border: 2px solid #ccc;
+}
+
+.report-div {
+  text-align: center;
+}
+
+.report {
+  margin: 1rem auto;
+  border-collapse: separate;
+  border-spacing: 15px 0;
 }
