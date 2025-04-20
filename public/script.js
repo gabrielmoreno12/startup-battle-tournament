@@ -25,86 +25,120 @@ window.addEventListener('DOMContentLoaded', async () => {
   const welcome = document.getElementById('welcome');
   const mainApp = document.getElementById('main-app');
   const btnWelcome = document.getElementById('btn-start');
+  const btnHelp = document.getElementById('btn-help');
 
   // 1) Esconde a aplicação principal no carregamento
   mainApp.style.display = 'none';
 
-  // 2) Ação do botão de boas‑vindas: só mostra a UI principal
+  // 2) Ação do botão de boas‑vindas: esconde a tela de welcome e mostra o app
   btnWelcome.addEventListener('click', () => {
     welcome.style.display = 'none';
     mainApp.style.display = 'block';
   });
 
-  // 3) Carrega lista lateral normalmente (para o usuário criar/deletar antes de iniciar)
+  // 3) Carrega lista lateral (inserir/deletar antes de iniciar)
   await carregarEmpresas();
 
-  // 4) Só agora cadastramos o .start que realmente inicia o torneio
+  // 4) Botão “Começar batalhas”
   document.querySelector('.start').addEventListener('click', async () => {
-    // busca fresh do servidor
     const fresh = await fetchEmpresas();
-    // inicializa estatísticas
     allStartups = fresh.map(e => ({
       ...e,
       pts_totais: e.pts_totais || 0,
       stats: {
-        convincing_pitch: 0,
-        bugs: 0,
-        good_user_traction: 0,
-        angry_investor: 0,
-        fake_news: 0,
-        sharkFights: 0,
-        marketBonus: 0,
-        marketOnus: 0
+        convincing_pitch: 0, bugs: 0, good_user_traction: 0,
+        angry_investor: 0, fake_news: 0, sharkFights: 0,
+        marketBonus: 0, marketOnus: 0
       }
     }));
-    // define participantes para a rodada 1
     participants = [...allStartups];
     winners = [];
     round = 1;
-    // finalmente renderiza a primeira batalha
     await renderBattles(true);
   });
-  const btnHelp = document.getElementById('btn-help');
+
+  // 5) Botão de Help: abre modal em formato de balão + personagem
   btnHelp.addEventListener('click', () => {
-    // 1) Cria overlay
+    // cria overlay
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
 
-    // 2) Cria container do modal
+    // cria e posiciona personagem
+    const char = document.createElement('img');
+    char.src = 'assets/imgs/karin_sama.webp';   // ajuste para o caminho correto
+    char.alt = 'Guia da Startup Arena';
+    char.className = 'help-character';
+    overlay.appendChild(char);
+
+    // cria balão (modal)
     const modal = document.createElement('div');
     modal.className = 'modal-content';
     modal.style.position = 'relative';
 
-    // 3) Botão de fechar
+    // botão fechar
     const closeBtn = document.createElement('span');
     closeBtn.className = 'modal-close';
     closeBtn.innerHTML = '&times;';
     modal.appendChild(closeBtn);
 
-    // 4) Conteúdo das regras
+    // título
     const title = document.createElement('h2');
-    title.textContent = 'Regras da Startup Arena';
+    title.textContent = 'Olá, Jurado!';
     modal.appendChild(title);
 
+    // lista de regras
     const ul = document.createElement('ul');
     ul.style.textAlign = 'left';
     ul.innerHTML = `
-
-    <li> Cadastre de 4 a 8 startups antes de iniciar.</li>
-    <li> Cada batalha soma pontos via checkboxes (Pitch +6, Tração +3, Bugs –4, Investor –6, Fake News –8).</li>
-    <li> Se der empate, rola o Shark Fight (ganhador aleatório +2 pontos).</li>
-    <li> Cada fase premia o vencedor com +30 pontos extras.</li>
-    <li> Market Events aleatórios acontecem antes do pitch (bônus ou ônus, exibidos ao lado do nome).</li>
-    <li> Ao fim, gera‑se um relatório e você pode baixar em CSV/Excel.</li>
+      Hoje vou ser seu guia, para comerçarmos que tal conhecermos as regras? <br>
+      <br>
+      <li>Você pode cadastrar 4 ou 8 startups para participar do torneio.</li>
+      <li>Cada batalha possue eventos que podem ser anotados para as startups:</li>
+      <ul>
+        <li>Pitch convincente: +6 pontos</li>
+        <li>Boa tração de usuários: +3 pontos</li>
+        <li>Produto com bugs: –4 pontos</li>
+        <li>Investidor irritado: –6 pontos</li>
+        <li>Fake news no pitch: –8 pontos</li>
+      </ul>
+      <li>Se der empate, rola o Shark Fight (aleatório +2 pontos).</li>
+      <li>Cada fase premia o vencedor com +30 pontos extras.</li>
+      <li><b>Market Events aleatórios acontecem antes do pitch</b> (bônus ou ônus).</li>
+      <li>Ao fim, <b>pode ser gerado um relatório e você pode baixar em CSV/Excel.</b></li>
     `;
     modal.appendChild(ul);
 
-    // 5) Monta e exibe
+    // seta “caixa de diálogo”
+    modal.style.background = '#fff';
+    modal.style.borderRadius = '8px';
+    modal.style.padding = '1rem';
+    modal.style.maxWidth = '90%';
+    modal.style.maxHeight = '90%';
+    modal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+    modal.style.zIndex = '2';
+
+    // triângulo no balão
+    modal.style.position = 'relative';
+    modal.insertAdjacentHTML('beforeend', `
+      <style>
+        .modal-content::after {
+          content: "";
+          position: absolute;
+          bottom: -12px;
+          left: 2rem;
+          border-width: 12px 12px 0 12px;
+          border-style: solid;
+          border-color: #fff transparent transparent transparent;
+        }
+      </style>
+    `);
+
+    // monta e exibe
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
 
-    // 6) Fecha modal
+    // fechar
     function closeModal() {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
@@ -115,6 +149,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   });
 });
+
 
 // —————————————————————————————
 // Helpers de API
@@ -505,7 +540,7 @@ function showWinner() {
   document.querySelector('.body').innerHTML = `
     <h1 class="winner-header">VENCEDOR</h1>
     <div class="companyWinner">
-      <h2>${champ.nome}</h2>
+      <h2 class="champ">${champ.nome}</h2>
       <p>${champ.slogan}</p>
       <p>Pontuação Final: ${champ.pts_totais}</p>
     </div>

@@ -46,12 +46,18 @@ body {
   background-clip: text;
 }
 
+
 #welcome {
+  position: relative;
+  /* torna os absolutos filhos relativos a ele */
+  overflow: visible;
+  /* garante que o img possa vazar */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  z-index: 1;
 
   width: 65vw;
   height: 50vh;
@@ -347,16 +353,36 @@ body {
   text-align: center;
 }
 
-/* container do conteúdo do modal */
 .modal-content {
   background: #fff;
-  border-radius: 8px;
-  padding: 1rem;
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin: 0 0 1rem;
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  max-width: 400px;
+  /* centraliza no overlay */
+  margin: auto;
+}
+
+/* Triângulo “cauda” da fala */
+.modal-content::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  /* vaza 20px para fora da base */
+  left: 40px;
+  /* posicione conforme o “ponto de fala” */
+  border-width: 20px 10px 0 10px;
+  border-style: solid;
+  border-color: #fff transparent transparent transparent;
+}
+
+.help-character {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 36.5rem;
+  width: 300px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* botão de fechar no cantinho */
@@ -379,6 +405,28 @@ body {
 
 .company-winner {
   background-color: #d4edda;
-  /* verde claro */
 }
 
+.companyWinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn__other {
+  display: flex;
+  gap: 1rem;
+  /* espaçamento entre os botões */
+  justify-content: center;
+  /* centraliza os botões */
+  margin: 1rem 0;
+}
+
+/* 4) Para que o botão “Jogar novamente” também fique centralizado */
+.again {
+  margin: 0 auto;
+}
+
+.champ-name {
+  font-size: 5rem;
+}
