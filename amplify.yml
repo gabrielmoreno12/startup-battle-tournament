@@ -1,0 +1,18 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      # como você não tem step de build (é só copiar public/), deixamos um placeholder
+      commands:
+        - echo "Nada para construir, só copiando public/"
+  artifacts:
+    # aponta para a pasta que contém index.html, CSS, JS, etc.
+    baseDirectory: public
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
