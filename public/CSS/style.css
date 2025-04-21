@@ -176,10 +176,6 @@ body {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
-
-  opacity: 0;
-  transform: translateY(50px);
-  animation: slideUp 0.7s ease-out forwards;
 }
 
 .companies h2 {
