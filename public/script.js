@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     mainApp.style.display = 'block';
     openHelpDialog(
       `Pronto para começar?`,
-      `Primeiro faça o cadastro de algumas startups!`,
+      `Primeiro faça o <b>cadastro</b> de algumas startups!`,
       2
     );
   });
@@ -134,13 +134,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     await renderBattles(true);
     openHelpDialog(
       `Agora começam as batalhas!`,
-      `Escolha a batalha que você deseja administrar e realize as pontuações necessárias, o vencedor de cada batalha passsa para próxima fase.`,
+      `<b>Escolha a batalha</b> que você deseja administrar e <b>realize as pontuações <br>necessárias</b>, o vencedor de cada batalha passsa para próxima fase.`,
       3
     );
   });
 
   btnMarketEvents.addEventListener('click', () => {
     const marketEventsInfo = `
+      <p>São eventos aleatórios que acontecem toda rodada, <b>beneficiando</b> ou <b>prejudicando</b> as startups:</p>
       😇 <b>Investidor Anjo</b>: Um investidor generoso entrou com capital extra! (+8 pts)<br>
       📈 <b>Viral Trend</b>: Sua startup explodiu nas redes sociais! (+5 pts)<br>
       🤖 <b>Avanço Tecnológico</b>: Seu time lançou um recurso revolucionário. (+4 pts)<br>
