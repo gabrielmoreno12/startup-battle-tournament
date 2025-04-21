@@ -23,17 +23,17 @@ function openHelpDialog(titleHTML, textHTML, mascoteNum) {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
 
-  // personagem
-  const char = document.createElement('img');
-  char.src = 'assets/imgs/karin_sama.webp';
-  char.alt = 'Guia da Startup Arena';
-  char.className = `help-character-v${mascoteNum}`;
-  overlay.appendChild(char);
-
   // balão de fala
   const modal = document.createElement('div');
   modal.className = 'modal-content help-dialog';
   modal.style.position = 'relative';
+
+  // personagem
+  const char = document.createElement('img');
+  char.src = 'assets/imgs/karin_sama.webp';
+  char.alt = 'Guia da Startup Arena';
+  char.className = `help-character v${mascoteNum}`;
+  modal.appendChild(char);
 
   // botão fechar
   const closeBtn = document.createElement('span');
@@ -154,37 +154,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // 5) Botão de Help: abre modal em formato de balão + personagem
   btnHelp.addEventListener('click', () => {
-    // cria overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-
-    // cria e posiciona personagem
-    const char = document.createElement('img');
-    char.src = 'assets/imgs/karin_sama.webp';   // ajuste para o caminho correto
-    char.alt = 'Guia da Startup Arena';
-    char.className = 'help-character';
-    overlay.appendChild(char);
-
-    // cria balão (modal)
-    const modal = document.createElement('div');
-    modal.className = 'modal-content help-dialog';
-    modal.style.position = 'relative';
-
-    // botão fechar
-    const closeBtn = document.createElement('span');
-    closeBtn.className = 'modal-close';
-    closeBtn.innerHTML = '&times;';
-    modal.appendChild(closeBtn);
-
-    // título
-    const title = document.createElement('h2');
-    title.textContent = 'Olá, Jurado!';
-    modal.appendChild(title);
-
-    // lista de regras
-    const ul = document.createElement('ul');
-    ul.style.textAlign = 'left';
-    ul.innerHTML = `
+    const title = `Olá, Jurado!`;
+    const content = `
       Hoje vou ser seu guia, para comerçarmos que tal conhecermos as regras? <br>
       <br>
       <li>Você pode cadastrar 4 ou 8 startups para participar do torneio.</li>
@@ -201,47 +172,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       <li><b>Market Events aleatórios acontecem antes do pitch</b> (bônus ou ônus).</li>
       <li>Ao fim, <b>pode ser gerado um relatório e você pode baixar em CSV/Excel.</b></li>
     `;
-    modal.appendChild(ul);
-
-    // seta “caixa de diálogo”
-    modal.style.background = '#fff';
-    modal.style.borderRadius = '8px';
-    modal.style.padding = '1rem';
-    modal.style.maxWidth = '90%';
-    modal.style.maxHeight = '90%';
-    modal.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-    modal.style.zIndex = '2';
-
-    // triângulo no balão
-    modal.style.position = 'relative';
-    modal.insertAdjacentHTML('beforeend', `
-      <style>
-        .modal-content::after {
-          content: "";
-          position: absolute;
-          bottom: -12px;
-          left: 2rem;
-          border-width: 12px 12px 0 12px;
-          border-style: solid;
-          border-color: #fff transparent transparent transparent;
-        }
-      </style>
-    `);
-
-    // monta e exibe
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    document.body.style.overflow = 'hidden';
-
-    // fechar
-    function closeModal() {
-      document.body.removeChild(overlay);
-      document.body.style.overflow = '';
-    }
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) closeModal();
-    });
+    openHelpDialog(title, content, 1);
   });
 });
 

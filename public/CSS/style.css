@@ -373,43 +373,6 @@ body {
   border-color: #fff transparent transparent transparent;
 }
 
-/* personagem do help */
-.help-character {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 36.5rem;
-  width: 300px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.help-character-v2 {
-  position: absolute;
-  bottom: 8.5rem;
-  left: 44.5rem;
-  width: 300px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.help-character-v3 {
-  position: absolute;
-  bottom: 8.5rem;
-  left: 38.5rem;
-  width: 300px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.help-character-v4 {
-  position: absolute;
-  bottom: 5.5rem;
-  left: 32.5rem;
-  width: 300px;
-  pointer-events: none;
-  z-index: 1;
-}
-
 /* botão close */
 .modal-close {
   position: absolute;
@@ -468,4 +431,38 @@ body {
   margin: 1rem auto;
   border-collapse: separate;
   border-spacing: 15px 0;
+}
+
+
+
+
+/* garante que o modal ajude no posicionamento */
+.modal-content.help-dialog {
+  /* position: relative; */
+}
+
+.help-character {
+  position: absolute;
+  width: 300px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.help-character.v1 {
+  bottom: -13.5rem;
+  left: -6rem;
+}
+.help-character.v2 {
+  bottom: -13.5rem; 
+  left: -6.5rem; 
+}
+
+.help-character.v3 {
+  bottom: -13.5rem;
+  left: -6rem;
+}
+
+.help-character.v4 {
+  bottom: -13.5rem;
+  left: -6rem;
 }
