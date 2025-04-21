@@ -361,6 +361,10 @@ body {
   max-width: 400px;
   position: relative;
   margin: auto;
+
+  opacity: 0;
+  transform: translateY(50px);
+  animation: slideUp 0.7s ease-out forwards;
 }
 
 .modal-content.help-dialog::after {
@@ -386,14 +390,18 @@ body {
   text-align: center;
 }
 
-.company-winner {
-  background-color: #d4edda;
-}
-
 .companyWinner {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  opacity: 0;
+  transform: translateY(50px);
+  animation: slideUp 0.7s ease-out forwards;
+}
+
+.company-winner {
+  background-color: rgba(0, 128, 0, 0.486);
 }
 
 .btn__other {
@@ -433,13 +441,6 @@ body {
   border-spacing: 15px 0;
 }
 
-
-
-
-/* garante que o modal ajude no posicionamento */
-.modal-content.help-dialog {
-  /* position: relative; */
-}
 
 .help-character {
   position: absolute;
