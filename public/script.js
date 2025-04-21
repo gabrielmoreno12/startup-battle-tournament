@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     mainApp.style.display = 'block';
     openHelpDialog(
       `Pronto para começar?`,
-      `Primeiro faça o <b>cadastro</b> de algumas startups!`,
+      `Primeiro, <b>faça o cadastro</b> de algumas startups!`,
       2
     );
   });
