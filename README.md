@@ -1,6 +1,21 @@
 # 🚀 Startup Arena! 
 
-Um torneio de startups com backend em Node.js/Express e banco de dados em PostgreSQL.
+Um torneio de startups onde as startups batalham em busca do primeiro lugar!
+
+---
+
+## 🧰 Tech Stack
+
+- **Backend**  
+  - **Node.js** (v18+)  
+  - **Express**  
+- **Banco de Dados**  
+  - **PostgreSQL**  
+- **Frontend**  
+  - HTML5, CSS3, JavaScript 
+- **Containerização & DevOps**  
+  - Docker  
+  - Docker Compose  
 
 ---
 
@@ -12,6 +27,7 @@ Um torneio de startups com backend em Node.js/Express e banco de dados em Postgr
 
 ### 🐳 Rodando com Docker
 1. **Build & up**  
+   Copie e cole esse comando no cmd dentro da pasta da **Startup Arena!**
    ```
    docker-compose up --build
    ```
@@ -21,4 +37,3 @@ Um torneio de startups com backend em Node.js/Express e banco de dados em Postgr
    Acesse: **http://localhost:3000**
 
 ---
-

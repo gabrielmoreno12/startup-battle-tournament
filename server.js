@@ -1,9 +1,20 @@
+/**
+ * @author Gabriel Consul Moreno <gabrielm200312@gmail.com>
+ *
+ * Servidor HTTP em Express que expõe endpoints para:
+ *  - listar empresas (GET /empresas)
+ *  - inserir empresa (POST /empresas)
+ *  - deletar empresa (DELETE /empresas/:id)
+ *  - atualizar pontos (PATCH /empresas/:id/points)
+ */
+
+/* Variáveis de ambiente. */
+
 require('dotenv').config();
 const express = require('express');
 const db = require('./db');
 const app = express();
 
-// Middleware para parsear JSON e servir arquivos estáticos
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -49,6 +60,7 @@ app.delete('/empresas/:id', async (req, res) => {
   }
 });
 
+// Atualiza a pontuação das empresas
 app.patch('/empresas/:id/points', async (req, res) => {
   try {
     const empresaID = parseInt(req.params.id, 10);

@@ -1,3 +1,7 @@
+/* 
+  @author Gabriel Consul Moreno <gabrielm200312@gmail.com>
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Trade+Winds&display=swap');
 
 body {
@@ -145,9 +149,7 @@ body {
 #btn-market-events {
   position: absolute;
   bottom: 8rem;
-  /* antes era 3rem igual ao help, agora sobe 2rem */
   left: 3rem;
-  /* mesma distância da esquerda */
   cursor: pointer;
   background: transparent;
   border: 2px solid #16488e;
@@ -155,6 +157,7 @@ body {
   padding: 0.5rem;
   font-size: 3rem;
 }
+
 #btn-market-events::before {
   content: "✨";
   font-size: 3rem;
@@ -199,7 +202,6 @@ body {
   padding: 1rem;
 }
 
-/* inputs e botões */
 .form__input,
 .form__btn {
   box-sizing: border-box;
@@ -317,9 +319,6 @@ body {
   margin-left: 30%;
 }
 
-/* —————————————————————————————
-   Modal overlay (todos os modais)
-   ————————————————————————————— */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -332,9 +331,6 @@ body {
   z-index: 1000;
 }
 
-/* —————————————————————————————
-   1) Modal padrão (batalhas)
-   ————————————————————————————— */
 .modal-overlay .modal-content:not(.help-dialog) {
   background: #fff;
   border-radius: 8px;
@@ -347,9 +343,6 @@ body {
   margin: auto;
 }
 
-/* —————————————————————————————
-   2) Modal de Help (balão de fala)
-   ————————————————————————————— */
 .modal-content.help-dialog {
   background: #fff;
   border-radius: 16px;
@@ -373,7 +366,7 @@ body {
   border-color: #fff transparent transparent transparent;
 }
 
-/* botão close */
+
 .modal-close {
   position: absolute;
   top: 0.5rem;
@@ -405,7 +398,7 @@ body {
   gap: 1rem;
   justify-content: center;
   margin: 1rem 0;
-} 
+}
 
 .champ-name {
   font-size: 4.5rem;
@@ -449,9 +442,10 @@ body {
   bottom: -13.5rem;
   left: -6rem;
 }
+
 .help-character.v2 {
-  bottom: -13.5rem; 
-  left: -6.5rem; 
+  bottom: -13.5rem;
+  left: -6.5rem;
 }
 
 .help-character.v3 {

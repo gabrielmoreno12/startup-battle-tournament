@@ -1,3 +1,9 @@
+/**
+ * @author Gabriel Consul Moreno <gabrielm200312@gmail.com>
+ * 
+ * Módulo de acesso aos dados da database.
+ */
+
 const { Pool } = require('pg');
 
 module.exports = { 

@@ -1,41 +1,81 @@
+/**
+ * @author Gabriel Consul Moreno <gabrielm200312@gmail.com>
+ *
+ * Módulo principal da Startup Arena:
+ *  - Define eventos de mercado aleatórios
+ *  - Mantém variáveis de estado do torneio
+ *  - Controla UI de cadastro, batalhas, relatórios e exportação
+ */
+
 'use strict';
 
-/////////////////////////////////////////
-// Market Events Deck
-/////////////////////////////////////////
+/* MARKET EVENTS. */
 const marketEvents = [
-  { name: "Viral Trend", description: "Sua startup explodiu nas redes sociais!", delta: +5, icon: "📈" },
-  { name: "Hackers Invadiram", description: "Um ataque cibernético tirou seu site do ar.", delta: -4, icon: "💻" },
-  { name: "Investidor Anjo", description: "Um investidor generoso entrou com capital extra!", delta: +8, icon: "😇" },
-  { name: "Crise Regulatória", description: "Uma nova lei complicou seu modelo de negócio.", delta: -6, icon: "⚖️" },
-  { name: "Matéria em Revista", description: "Você foi destaque em uma grande publicação!", delta: +3, icon: "📰" },
-  { name: "Avanço Tecnológico", description: "Seu time lançou um recurso revolucionário.", delta: +4, icon: "🤖" }
+  { 
+    name: "Viral Trend", 
+    description: "Sua startup explodiu nas redes sociais!", 
+    delta: +5, 
+    icon: "📈" 
+  },
+  { name: "Hackers Invadiram", 
+    description: "Um ataque cibernético tirou seu site do ar.", 
+    delta: -4, 
+    icon: "💻" 
+  },
+  { 
+    name: "Investidor Anjo", 
+    description: "Um investidor generoso entrou com capital extra!", 
+    delta: +8, 
+    icon: "😇" 
+  },
+  { 
+    name: "Crise Regulatória", 
+    description: "Uma nova lei complicou seu modelo de negócio.", 
+    delta: -6, 
+    icon: "⚖️" 
+  },
+  { 
+    name: "Matéria em Revista", 
+    description: "Você foi destaque em uma grande publicação!", 
+    delta: +3, 
+    icon: "📰" 
+  },
+  { 
+    name: "Avanço Tecnológico", 
+    description: "Seu time lançou um recurso revolucionário.", 
+    delta: +4, 
+    icon: "🤖" 
+  }
 ];
 
+/* VARIÁVEIS DE AMBIENTE. */
 let round = 1;
 let participants = [];
 let winners = [];
 let allStartups = [];
 let tournamentChampion = null;
 
+/**
+ * Abre "caixa de diálogo" com personagem.
+ * 
+ * @param {string} titleHTML Título.
+ * @param {string} textHTML Conteúdo.
+ * @param {number} mascoteNum Versão do mascote para estilização.
+ */
 function openHelpDialog(titleHTML, textHTML, mascoteNum) {
-  // cria overlay
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
 
-  // balão de fala
   const modal = document.createElement('div');
   modal.className = 'modal-content help-dialog';
   modal.style.position = 'relative';
 
-  // personagem
   const char = document.createElement('img');
   char.src = 'assets/imgs/karin_sama.webp';
   char.alt = 'Guia da Startup Arena';
   char.className = `help-character v${mascoteNum}`;
   modal.appendChild(char);
 
-  // botão fechar
   const closeBtn = document.createElement('span');
   closeBtn.className = 'modal-close';
   closeBtn.innerHTML = '&times;';
@@ -89,9 +129,8 @@ function openHelpDialog(titleHTML, textHTML, mascoteNum) {
 }
 
 
-// —————————————————————————————
-// DOMContentLoaded: monta lista lateral e cadastra Start
-// —————————————————————————————
+
+/* Monta lista lateral e cadastra Start */
 window.addEventListener('DOMContentLoaded', async () => {
   const welcome = document.getElementById('welcome');
   const mainApp = document.getElementById('main-app');
@@ -99,10 +138,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   const btnHelp = document.getElementById('btn-help');
   const btnMarketEvents = document.getElementById('btn-market-events');
 
-  // 1) Esconde a aplicação principal no carregamento
   mainApp.style.display = 'none';
 
-  // 2) Ação do botão de boas‑vindas: esconde a tela de welcome e mostra o app
   btnWelcome.addEventListener('click', () => {
     welcome.style.display = 'none';
     mainApp.style.display = 'block';
@@ -113,10 +150,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     );
   });
 
-  // 3) Carrega lista lateral (inserir/deletar antes de iniciar)
+  // Carrega lista lateral 
   await carregarEmpresas();
 
-  // 4) Botão “Começar batalhas”
+  // Botão “Começar batalhas”
   document.querySelector('.start').addEventListener('click', async () => {
     const fresh = await fetchEmpresas();
     allStartups = fresh.map(e => ({
@@ -139,6 +176,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     );
   });
 
+  // Botão que lista market events no menu principal
   btnMarketEvents.addEventListener('click', () => {
     const marketEventsInfo = `
       <p>São eventos aleatórios que acontecem toda rodada, <b>beneficiando</b> ou <b>prejudicando</b> as startups:</p>
@@ -152,7 +190,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     openHelpDialog(`Market Events!`, marketEventsInfo, 4);
   })
 
-  // 5) Botão de Help: abre modal em formato de balão + personagem
+  // Botão de Help no menu principal
   btnHelp.addEventListener('click', () => {
     const title = `Olá, Jurado!`;
     const content = `
@@ -176,10 +214,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
+//////////////////////////////
+/*       API HANDLERS       */
+//////////////////////////////
 
-// —————————————————————————————
-// Helpers de API
-// —————————————————————————————
 async function fetchEmpresas() {
   const res = await fetch('/empresas');
   if (!res.ok) throw new Error(res.statusText);
@@ -193,9 +231,6 @@ async function patchPoints(id, delta) {
   });
 }
 
-// —————————————————————————————
-// Inserir / Deletar / Listar empresas (lateral)
-// —————————————————————————————
 async function carregarEmpresas() {
   const container = document.querySelector('.companies__row');
   if (!container) return;
@@ -217,7 +252,6 @@ async function carregarEmpresas() {
     .disabled = !(count === 4 || count === 8);
 }
 
-// exibe a .message fixa no canto por 2s
 function toast(text, isError = false) {
   const msgEl = document.querySelector('.message');
   msgEl.textContent = text;
@@ -226,14 +260,10 @@ function toast(text, isError = false) {
   setTimeout(() => msgEl.classList.remove('show'), 2000);
 }
 
-// —————————————————————————————
-// INSERT
-// —————————————————————————————
 document.querySelector('.form--insert__company')
   .addEventListener('submit', async ev => {
     ev.preventDefault();
 
-    // Monta o objeto a ser enviado
     const nextID = await generate_ID();
     const company = {
       EMPRESA_ID: nextID,
@@ -260,12 +290,10 @@ document.querySelector('.form--insert__company')
     } catch (err) {
       toast('Erro: ' + err.message, true);
     }
-  });
+  }
+);
 
 
-// —————————————————————————————
-// DELETE
-// —————————————————————————————
 document.querySelector('.form--delete__company')
   .addEventListener('submit', async ev => {
     ev.preventDefault();
@@ -289,8 +317,16 @@ document.querySelector('.form--delete__company')
     } catch (err) {
       toast('Erro: ' + err.message, true);
     }
-  });
+  }
+);
 
+
+/**
+ * Gerador de ID's sequencias e não repetidos para os cadastros.
+ * 
+ * @async
+ * @returns {Promise<number>} Promise que resolve com o próximo ID disponível.
+ */
 async function generate_ID() {
   const empresas = await fetchEmpresas();
   const ids = empresas.map(e => e.empresa_id).sort((a, b) => a - b);
@@ -302,6 +338,14 @@ async function generate_ID() {
   return next;
 }
 
+/**
+ * Embaralha os elementos de um array. Nesse módulo, essa função 
+ * será usada para embaralhar as startups cadastradas e fazer as 
+ * duplas de batalha.
+ *
+ * @param {T[]} arr - Array de elementos a ser embaralhado.
+ * @returns {T[]} O mesmo array, agora com os elementos em ordem aleatória.
+ */
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -310,6 +354,16 @@ function shuffle(arr) {
   return arr;
 }
 
+/**
+ * Retorna o nome da fase do torneio de acordo com o número de participantes.
+ *
+ * @param {number} count - Quantidade de startups na rodada (8, 4 ou 2).
+ * @returns {string} Nome da fase correspondente:
+ *   - 8: "QUARTAS DE FINAL"
+ *   - 4: "SEMIFINAL"
+ *   - 2: "FINAL"
+ *   - caso contrário, retorna string vazia.
+ */
 function getStageName(count) {
   switch (count) {
     case 8: return 'QUARTAS DE FINAL';
@@ -319,9 +373,14 @@ function getStageName(count) {
   }
 }
 
-/////////////////////////////////////////
-/* RENDERIZA BATALHAS EM DUPLAS E ROUNDS */
-/////////////////////////////////////////
+/**
+ * Renderiza as batalhas em duplas para a rodada atual.
+ *
+ * @async
+ * @param {boolean} clearPage - Se `true`, reinicia a área de batalha e
+ *   exibe o cabeçalho da rodada com o botão de avançar. Caso `false`(valor default), mantém
+ *   apenas a atualização das duplas existentes.
+ */ 
 async function renderBattles(clearPage = false) {
   if (clearPage) {
     const stage = getStageName(participants.length);
@@ -356,6 +415,13 @@ async function renderBattles(clearPage = false) {
   }
 }
 
+/**
+ * Cria um card de batalha entre duas startups no DOM.
+ *
+ * @param {Object} a              - Dados da primeira startup.
+ * @param {Object} b              - Dados da segunda startup.
+ * @param {HTMLElement} container - Elemento que receberá o card.
+ */
 function criarDupla(a, b, container) {
   const div = document.createElement('div');
   div.className = 'divBattle';
@@ -376,28 +442,36 @@ function criarDupla(a, b, container) {
   bindBattleModal(div, a, b);
 }
 
+/**
+ * Vincula o comportamento de batalha a um card, abrindo um modal
+ * para registrar eventos e pontuações entre duas startups.
+ *
+ * @param {HTMLElement} divBattle - Elemento de container da dupla de batalha.
+ * @param {Object} a               - Dados da primeira startup.
+ * @param {Object} b               - Dados da segunda startup.
+ */
 function bindBattleModal(divBattle, a, b) {
   divBattle.addEventListener('click', () => {
-    // 1) sorteia um Market Event e quem será afetado
+    // sorteia um Market Event e quem será afetado
     const evtIndex = Math.floor(Math.random() * marketEvents.length);
     const evt = marketEvents[evtIndex];
     const target = Math.random() < 0.5 ? a : b;
     const other = target === a ? b : a;
 
-    // 2) cria overlay e modal container
+    // cria overlay e modal container
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     const modal = document.createElement('div');
     modal.className = 'modal-content';
     modal.style.position = 'relative';
 
-    // 3) botão fechar
+    // botão fechar
     const closeBtn = document.createElement('span');
     closeBtn.className = 'modal-close';
     closeBtn.innerHTML = '&times;';
     modal.appendChild(closeBtn);
 
-    // 4) monta o form sem market-event no topo
+    // monta o form sem market-event no topo
     const form = document.createElement('form');
     form.className = 'modal-form';
     form.innerHTML = `
@@ -433,7 +507,7 @@ function bindBattleModal(divBattle, a, b) {
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
 
-    // 5) injetar market-event dentro da div afetada, acima do <h3>
+    // injetar market-event dentro da div afetada, acima do <h3>
     const targetId = target === a
       ? `#modal-companyA-${a.empresa_id}`
       : `#modal-companyB-${b.empresa_id}`;
@@ -448,7 +522,7 @@ function bindBattleModal(divBattle, a, b) {
     const h3 = targetDiv.querySelector('h3');
     targetDiv.insertBefore(evtP, h3);
 
-    // 6) funções de fechar modal
+    // funções de fechar modal
     function closeModal() {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
@@ -456,7 +530,7 @@ function bindBattleModal(divBattle, a, b) {
     closeBtn.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => e.target === overlay && closeModal());
 
-    // 7) handler de submit
+    // handler de submit
     form.addEventListener('submit', async ev => {
       ev.preventDefault();
 
@@ -501,7 +575,7 @@ function bindBattleModal(divBattle, a, b) {
       if (evt.delta > 0) target.stats.bonusEvents = (target.stats.bonusEvents || 0) + 1;
       else target.stats.onusEvents = (target.stats.onusEvents || 0) + 1;
 
-      // decide empate → Shark Fight
+      // decide empate = Shark Fight
       let champ = null;
       if (a.pts_totais > b.pts_totais) {
         champ = a;
@@ -524,7 +598,6 @@ function bindBattleModal(divBattle, a, b) {
         champ = sharkWinner;
       }
 
-      // bônus de vencedor +30
       await patchPoints(champ.empresa_id, 30);
       champ.pts_totais += 30;
       divBattle.querySelector(
@@ -557,10 +630,10 @@ function bindBattleModal(divBattle, a, b) {
   });
 }
 
-
-// —————————————————————————————
-// Campeão / Relatório / Excel / Reset
-// —————————————————————————————
+/**
+ * Exibe o painel de campeão na UI, mostrando nome, slogan, pontuação final
+ * e botões para relatório, exportar Excel e reiniciar o jogo.
+ */
 function showWinner() {
   const champ = tournamentChampion;
   document.querySelector('.body').innerHTML = `
@@ -581,6 +654,11 @@ function showWinner() {
   document.querySelector('.again').addEventListener('click', resetDB);
 }
 
+
+/**
+ * Renderiza o relatório de todas as batalhas em uma tabela na UI
+ * e adiciona botão para voltar ao painel de campeão.
+ */
 function showReport() {
   const body = document.querySelector('.body');
   body.innerHTML = `
@@ -619,6 +697,11 @@ function showReport() {
   document.querySelector('.back').addEventListener('click', showWinner);
 }
 
+/**
+ * Remove todas as startups cadastradas e recarrega a página.
+ *
+ * @async
+ */
 async function resetDB() {
   await Promise.all(allStartups.map(s =>
     fetch(`/empresas/${s.empresa_id}`, { method: 'DELETE' })
