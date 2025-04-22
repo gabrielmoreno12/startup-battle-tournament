@@ -1,6 +1,6 @@
 # 🚀 Startup Arena! 
 
-Um torneio de startups onde as startups batalham em busca do primeiro lugar!
+Um torneio de startups que batalham pelo primeiro lugar!
 
 ## 🧰 Tech Stack
 
