@@ -15,15 +15,11 @@ Um torneio de startups onde as startups batalham em busca do primeiro lugar!
   - Docker  
   - Docker Compose  
 
----
-
-### 🛠 Pré‑requisitos
+## 🛠 Pré‑requisitos
 - Docker ≥ 20.x  
 - Docker Compose ≥ 1.29.x  
 
----
-
-### 🐳 Rodando com Docker
+## 🐳 Rodando com Docker
 1. **Build & up**  
    Copie e cole esse comando no cmd dentro da pasta da **Startup Arena!**
    ```
@@ -33,5 +29,3 @@ Um torneio de startups onde as startups batalham em busca do primeiro lugar!
 
 2. **Verificar**  
    Acesse: **http://localhost:3000**
-
----
