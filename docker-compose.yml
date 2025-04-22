@@ -1,3 +1,4 @@
+# docker-compose.yml
 version: '3.8'
 
 services:
@@ -5,35 +6,32 @@ services:
     image: postgres:14
     restart: always
     environment:
-      POSTGRES_USER: postgres       # usuário padrão
-      POSTGRES_PASSWORD: postgres   # senha padrão
-      POSTGRES_DB: startup_arena    # nome do banco a ser criado
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: startup_arena
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-        # todo arquivo .sql aqui é executado automaticamente
       - db-data:/var/lib/postgresql/data
-        # persiste dados entre reinícios
     ports:
       - "5433:5432"
-        # mapeia a porta 5432 do container para 5433 na sua máquina
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
-      # lê o Dockerfile na raiz e gera a imagem do app
     depends_on:
       - db
-      # só sobe o app depois que o serviço “db” estiver saudável
     ports:
       - "3000:3000"
-      # mapeia a porta 3000 interna para 3000 local
     environment:
       NODE_ENV: development
       CONNECTION_STRING: postgres://postgres:postgres@db:5432/startup_arena
-      # string de conexão apontando para o serviço “db”
     volumes:
       - .:/usr/src/app
-      # monta o código‑fonte local dentro do container (útil em dev)
+      - /usr/src/app/node_modules
 
 volumes:
   db-data:
-    # volume Docker para armazenar dados do Postgres
